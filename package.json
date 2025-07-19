@@ -1,0 +1,12 @@
+{
+  "name": "Harmonia",
+  "version": "1.0.0",
+  "description": "Harmonia By Devan Yudistira Sugiharta.",
+  "main": "package/make_server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node package/make_server.js"
+  },
+  "author": "",
+  "license": "ISC"
+} 
