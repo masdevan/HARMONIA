@@ -1,0 +1,130 @@
+const mimeTypes = {
+  // Text & Web
+  '.html': 'text/html',
+  '.htm': 'text/html',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.mjs': 'application/javascript',
+  '.json': 'application/json',
+  '.xml': 'application/xml',
+  '.txt': 'text/plain',
+  '.csv': 'text/csv',
+  '.md': 'text/markdown',
+  '.pdf': 'application/pdf',
+  '.php': 'application/x-httpd-php',
+
+  // Images
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.bmp': 'image/bmp',
+  '.tiff': 'image/tiff',
+  '.webp': 'image/webp',
+  '.apng': 'image/apng',
+  '.avif': 'image/avif',
+  '.jfif': 'image/jpeg',
+  '.pjpeg': 'image/jpeg',
+  '.pjp': 'image/jpeg',
+
+  // Audio
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
+  '.ogg': 'audio/ogg',
+  '.oga': 'audio/ogg',
+  '.m4a': 'audio/mp4',
+  '.aac': 'audio/aac',
+  '.flac': 'audio/flac',
+  '.mid': 'audio/midi',
+  '.midi': 'audio/midi',
+  '.weba': 'audio/webm',
+
+  // Video
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
+  '.ogv': 'video/ogg',
+  '.mov': 'video/quicktime',
+  '.avi': 'video/x-msvideo',
+  '.mkv': 'video/x-matroska',
+  '.3gp': 'video/3gpp',
+  '.3g2': 'video/3gpp2',
+  '.wmv': 'video/x-ms-wmv',
+  '.flv': 'video/x-flv',
+  '.m4v': 'video/x-m4v',
+
+  // Fonts
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
+  '.eot': 'application/vnd.ms-fontobject',
+  '.otf': 'font/otf',
+  '.sfnt': 'font/sfnt',
+
+  // Archives
+  '.zip': 'application/zip',
+  '.tar': 'application/x-tar',
+  '.gz': 'application/gzip',
+  '.rar': 'application/vnd.rar',
+  '.7z': 'application/x-7z-compressed',
+  '.bz2': 'application/x-bzip2',
+  '.xz': 'application/x-xz',
+  '.tgz': 'application/gzip',
+  '.tar.gz': 'application/gzip',
+  '.tar.bz2': 'application/x-bzip2',
+
+  // Office
+  '.doc': 'application/msword',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.xls': 'application/vnd.ms-excel',
+  '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  '.ppt': 'application/vnd.ms-powerpoint',
+  '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  '.odt': 'application/vnd.oasis.opendocument.text',
+  '.ods': 'application/vnd.oasis.opendocument.spreadsheet',
+  '.odp': 'application/vnd.oasis.opendocument.presentation',
+
+  // Code
+  '.c': 'text/x-c',
+  '.cpp': 'text/x-c',
+  '.h': 'text/x-c',
+  '.hpp': 'text/x-c',
+  '.java': 'text/x-java-source',
+  '.py': 'text/x-python',
+  '.rb': 'text/x-ruby',
+  '.go': 'text/x-go',
+  '.sh': 'application/x-sh',
+  '.ts': 'application/typescript',
+  '.tsx': 'application/typescript',
+  '.jsx': 'application/javascript',
+  '.vue': 'text/x-vue',
+  '.json5': 'application/json',
+
+  // Others
+  '.apk': 'application/vnd.android.package-archive',
+  '.exe': 'application/vnd.microsoft.portable-executable',
+  '.msi': 'application/x-msdownload',
+  '.bat': 'application/x-msdownload',
+  '.bin': 'application/octet-stream',
+  '.dat': 'application/octet-stream',
+  '.db': 'application/octet-stream',
+  '.swf': 'application/x-shockwave-flash',
+  '.rtf': 'application/rtf',
+  '.psd': 'image/vnd.adobe.photoshop',
+  '.ai': 'application/postscript',
+  '.eps': 'application/postscript',
+  '.ps': 'application/postscript',
+  '.csv': 'text/csv',
+  '.tsv': 'text/tab-separated-values',
+  '.yml': 'text/yaml',
+  '.yaml': 'text/yaml',
+  '.log': 'text/plain',
+  '.map': 'application/json',
+};
+
+function getMimeType(ext) {
+  return mimeTypes[ext] || 'application/octet-stream';
+}
+
+module.exports = { getMimeType, mimeTypes };
