@@ -5,6 +5,7 @@ const path      = require('path');
 const { renderWithComponents } = require('./make_components');
 const { envReader, injectEnvVars } = require('./make_envreader');
 const { getMimeType } = require('./make_mimelist');
+const { initializeHotReload, injectHotReloadScript, handleSSE } = require('./make_hotreload');
 
 const env = envReader();
 let hostname  = env.HOSTNAME || '127.0.0.1';
@@ -16,6 +17,13 @@ const baseDir   = path.join(__dirname, '..', env.BASEDIR || 'src/app');
 function startServer(portToTry) {
   const server = http.createServer((req, res) => {
     let urlPath = req.url.split('?')[0];
+    
+    // Handle SSE endpoint for hot reload
+    if (urlPath === '/__hotreload') {
+      handleSSE(req, res);
+      return;
+    }
+    
     if (urlPath === '/' || urlPath === '') {
       urlPath = '/index';
     }
@@ -60,10 +68,11 @@ function startServer(portToTry) {
 
     try {
       const html = renderWithComponents(filePath);
-      const htmlWithEnv = injectEnvVars(html, env); 
+      const htmlWithEnv = injectEnvVars(html, env);
+      const htmlWithHotReload = injectHotReloadScript(htmlWithEnv);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/html');
-      res.end(htmlWithEnv);
+      res.end(htmlWithHotReload);
     } catch (err) {
       res.statusCode = 500;
       res.setHeader('Content-Type', 'text/plain');
@@ -83,6 +92,7 @@ function startServer(portToTry) {
 
   server.listen(portToTry, hostname, () => {
     console.log(`Server is running at http://${hostname}:${portToTry}/`);
+    initializeHotReload(server, baseDir);
   });
 }
 
