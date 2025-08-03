@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { injectEnvVars, envReader } = require('./make_envreader');
+const { processLoops } = require('./make_each');
 const env = envReader();
 
 //===== Custom Attribut =====//
@@ -15,6 +16,19 @@ function parseAttributes(str) {
     return attrs;
 }
 
+//===== Component Path Resolver =====//
+function resolveComponentPath(tagName, currentFilePath, projectRoot) {
+    if (!tagName.includes('.')) {
+        return path.join(path.dirname(currentFilePath), `${tagName}.html`);
+    }
+
+    const parts = tagName.split('.');
+    const baseDir = parts[0]; 
+    const remainingParts = parts.slice(1);
+    const componentPath = path.join(projectRoot, 'src', baseDir, ...remainingParts) + '.html';
+    return componentPath;
+}
+
 //===== Process Components Function =====//
 function processComponents(html, filePath, processedFiles = new Set()) {
     const projectRoot = path.join(__dirname, '..');
@@ -23,19 +37,9 @@ function processComponents(html, filePath, processedFiles = new Set()) {
         return html;
     }
     processedFiles.add(filePath);
+    
     html = html.replace(/<([a-zA-Z0-9_\-\.]+)([^>]*)\/>/g, (match, tagName, attrStr) => {
-        let compPath;
-        if (tagName.includes('.')) {
-            const parts = tagName.split('.');
-            const srcFolder = path.join(projectRoot, 'src', parts[0]);
-            if (fs.existsSync(srcFolder)) {
-                compPath = path.join(projectRoot, 'src', parts[0], `${parts[1]}.html`);
-            } else {
-                compPath = path.join(path.dirname(filePath), parts[0], `${parts[1]}.html`);
-            }
-        } else {
-            compPath = path.join(path.dirname(filePath), `${tagName}.html`);
-        }
+        const compPath = resolveComponentPath(tagName, filePath, projectRoot);
         
         if (fs.existsSync(compPath)) {
             let compHtml = fs.readFileSync(compPath, 'utf-8');
@@ -47,25 +51,13 @@ function processComponents(html, filePath, processedFiles = new Set()) {
             }
             
             compHtml = processComponents(compHtml, compPath, processedFiles);
-            
             return compHtml;
         }
         return match;
     });
 
     html = html.replace(/<([a-zA-Z0-9_\-\.]+)([^>]*)>([\s\S]*?)<\/\1>/g, (match, tagName, attrStr, innerContent) => {
-        let compPath;
-        if (tagName.includes('.')) {
-            const parts = tagName.split('.');
-            const srcFolder = path.join(projectRoot, 'src', parts[0]);
-            if (fs.existsSync(srcFolder)) {
-                compPath = path.join(projectRoot, 'src', parts[0], `${parts[1]}.html`);
-            } else {
-                compPath = path.join(path.dirname(filePath), parts[0], `${parts[1]}.html`);
-            }
-        } else {
-            compPath = path.join(path.dirname(filePath), `${tagName}.html`);
-        }
+        const compPath = resolveComponentPath(tagName, filePath, projectRoot);
         
         if (fs.existsSync(compPath)) {
             let compHtml = fs.readFileSync(compPath, 'utf-8');
@@ -90,7 +82,10 @@ function processComponents(html, filePath, processedFiles = new Set()) {
 //===== Server Main Code =====//
 function renderWithComponents(filePath) {
     let html = fs.readFileSync(filePath, 'utf-8');
-    return processComponents(html, filePath);
+    html = processComponents(html, filePath);
+    html = processLoops(html);
+    
+    return html;
 }
 
 //===== Initialization =====//
